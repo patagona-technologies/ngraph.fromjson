@@ -1,28 +1,28 @@
 module.exports = load;
 
-var createGraph = require('ngraph.graph');
+var createGraph = require("ngraph.graph");
 
 function load(jsonGraph, nodeTransform, linkTransform) {
   var stored;
   nodeTransform = nodeTransform || id;
   linkTransform = linkTransform || id;
-  if (typeof jsonGraph === 'string') {
+  if (typeof jsonGraph === "string") {
     stored = JSON.parse(jsonGraph);
   } else {
     stored = jsonGraph;
   }
 
-  var graph = createGraph(),
-      i;
+  var graph = createGraph({ multigraph: true }),
+    i;
 
   if (stored.links === undefined || stored.nodes === undefined) {
-    throw new Error('Cannot load graph without links and nodes');
+    throw new Error("Cannot load graph without links and nodes");
   }
 
   for (i = 0; i < stored.nodes.length; ++i) {
     var parsedNode = nodeTransform(stored.nodes[i]);
-    if (!parsedNode.hasOwnProperty('id')) {
-      throw new Error('Graph node format is invalid: Node id is missing');
+    if (!parsedNode.hasOwnProperty("id")) {
+      throw new Error("Graph node format is invalid: Node id is missing");
     }
 
     graph.addNode(parsedNode.id, parsedNode.data);
@@ -30,8 +30,10 @@ function load(jsonGraph, nodeTransform, linkTransform) {
 
   for (i = 0; i < stored.links.length; ++i) {
     var link = linkTransform(stored.links[i]);
-    if (!link.hasOwnProperty('fromId') || !link.hasOwnProperty('toId')) {
-      throw new Error('Graph link format is invalid. Both fromId and toId are required');
+    if (!link.hasOwnProperty("fromId") || !link.hasOwnProperty("toId")) {
+      throw new Error(
+        "Graph link format is invalid. Both fromId and toId are required"
+      );
     }
 
     graph.addLink(link.fromId, link.toId, link.data);
@@ -40,4 +42,6 @@ function load(jsonGraph, nodeTransform, linkTransform) {
   return graph;
 }
 
-function id(x) { return x; }
+function id(x) {
+  return x;
+}
