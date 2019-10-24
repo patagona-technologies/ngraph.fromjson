@@ -1,6 +1,6 @@
 module.exports = load;
 
-var createGraph = require("ngraph.graph");
+var createGraph = require("@patagona-technologies/ngraph.graph");
 
 function load(jsonGraph, nodeTransform, linkTransform) {
   var stored;
